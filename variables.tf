@@ -1,6 +1,6 @@
 variable "subscription_id_soc_sandbox" {
   default = "7e894d88-739e-4fcc-a42a-601416b8125c"
-  type = string
+  type    = string
 }
 
 variable "location" {
