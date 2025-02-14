@@ -1,3 +1,7 @@
+variable "subscription_id_soc_sandbox" {
+  type = string
+}
+
 variable "location" {
   default = "canadacentral"
   type    = string
