@@ -29,6 +29,9 @@ module "avm-res-network-virtualnetwork" {
     "DomainControllerSubnet" = {
       name             = "DomainControllerSubnet"
       address_prefixes = ["10.0.1.0/26"]
+      network_security_group = {
+        id = module.domainControllerSubnetSubnet_nsg.resource.id
+      }
     }
   }
   enable_telemetry = var.telemetry_enabled

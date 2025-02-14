@@ -3,7 +3,7 @@ locals {
     "Allow_Bastion_Inbound" = {
       name                       = "Allow_Bastion_Inbound"
       access                     = "Allow"
-      destination_address_prefix = "VirtualNetwork"
+      destination_address_prefix = module.avm-res-network-virtualnetwork.subnets["DomainControllerSubnet"].resource.output.properties.addressPrefixes[0]
       destination_port_ranges    = ["22", "3389"]
       direction                  = "Inbound"
       priority                   = 150
@@ -179,6 +179,7 @@ locals {
     }
   }
 }
+
 # This is the module call
 module "domainControllerSubnetSubnet_nsg" {
   source              = "Azure/avm-res-network-networksecuritygroup/azurerm"
