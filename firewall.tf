@@ -37,6 +37,8 @@ module "fwpolicy" {
   firewall_policy_sku = "Basic"
 
   enable_telemetry = var.telemetry_enabled
+
+  // TODO: Create rule to allow accessing GitHub for DC script
 }
 
 module "firewall" {
