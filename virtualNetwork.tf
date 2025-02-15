@@ -25,6 +25,8 @@ module "avm-res-network-virtualnetwork" {
       network_security_group = {
         id = module.computeSubnet_nsg.resource.id
       }
+      // TODO: Disable default
+      default_outbound_access_enabled = true
     }
     "DomainControllerSubnet" = {
       name             = "DomainControllerSubnet"
@@ -32,6 +34,8 @@ module "avm-res-network-virtualnetwork" {
       network_security_group = {
         id = module.domainControllerSubnetSubnet_nsg.resource.id
       }
+      // TODO: Disable default
+      default_outbound_access_enabled = true
     }
   }
   enable_telemetry = var.telemetry_enabled
