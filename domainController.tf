@@ -106,4 +106,13 @@ module "dc_vm" {
   license_type = "Windows_Server"
 }
 
-// TODO: Update VNet's DNS server IP to DC IP
+// Update VNet's DNS server IP to DC IP
+// Note: setting DNS IPs here precludes setting them in the VNet module
+resource "azurerm_virtual_network_dns_servers" "vnet_dns" {
+  virtual_network_id = module.avm-res-network-virtualnetwork.resource_id
+  dns_servers        = [module.dc_vm.network_interfaces.network_interface_1.private_ip_address]
+}
+
+# output "ipconfig" {
+#   value = module.dc_vm.network_interfaces.network_interface_1
+# }

@@ -1,6 +1,8 @@
 module "avm-res-network-virtualnetwork" {
   source = "Azure/avm-res-network-virtualnetwork/azurerm"
 
+  // DO NOT SET DNS IPs HERE
+
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   name                = "soc-demo-vnet-cnc-01"
