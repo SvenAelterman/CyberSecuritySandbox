@@ -70,6 +70,8 @@ module "dc_vm" {
   }
 
   managed_identities = {
+    // TODO: This should be false because we don't want
+    // to make modifications in the Entra tenant
     system_assigned = true
   }
 
