@@ -62,7 +62,7 @@ module "analysis_win_vm" {
       ip_configurations = {
         ip_configuration_1 = {
           name                          = "ipconfig1"
-          private_ip_subnet_resource_id = module.avm-res-network-virtualnetwork.subnets["ComputeSubnet"].resource.output.id
+          private_ip_subnet_resource_id = module.virtualnetwork.subnets["ComputeSubnet"].resource.output.id
           private_ip_address_allocation = "Dynamic"
         }
       }

@@ -8,7 +8,7 @@ locals {
       direction                  = "Inbound"
       priority                   = 150
       protocol                   = "Tcp"
-      source_address_prefix      = module.avm-res-network-virtualnetwork.subnets["AzureBastionSubnet"].resource.output.properties.addressPrefixes[0]
+      source_address_prefix      = module.virtualnetwork.subnets[local.subnet_names.AzureBastionSubnet].resource.output.properties.addressPrefixes[0]
       source_port_range          = "*"
     }
   }

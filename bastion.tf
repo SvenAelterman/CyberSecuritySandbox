@@ -24,7 +24,7 @@ module "bastion" {
   sku                 = "Standard"
   ip_configuration = {
     name                 = "bastion-ipconfig"
-    subnet_id            = module.avm-res-network-virtualnetwork.subnets["AzureBastionSubnet"].resource.output.id
+    subnet_id            = module.virtualnetwork.subnets[local.subnet_names.AzureBastionSubnet].resource.output.id
     public_ip_address_id = module.bastion_public_ip.public_ip_id
   }
   ip_connect_enabled     = true

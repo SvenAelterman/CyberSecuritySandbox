@@ -1,4 +1,4 @@
-module "avm_res_keyvault_vault" {
+module "rt" {
   source = "Azure/avm-res-network-routetable/azurerm"
 
   enable_telemetry    = var.telemetry_enabled
@@ -7,7 +7,6 @@ module "avm_res_keyvault_vault" {
   location            = azurerm_resource_group.network_rg.location
 
   routes = {
-
     default = {
       name                   = "default"
       address_prefix         = "0.0.0.0/0"
@@ -17,7 +16,7 @@ module "avm_res_keyvault_vault" {
   }
 
   subnet_resource_ids = {
-    # subnet1 = module.avm-res-network-virtualnetwork.subnets["DomainControllerSubnet"].resource.output.id,
-    # subnet2 = module.avm-res-network-virtualnetwork.subnets["ComputeSubnet"].resource.output.id
+    subnet1 = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.id,
+    subnet2 = module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id
   }
 }

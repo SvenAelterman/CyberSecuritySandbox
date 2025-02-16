@@ -94,7 +94,7 @@ module "dc_vm" {
       ip_configurations = {
         ip_configuration_1 = {
           name                          = "ipconfig1"
-          private_ip_subnet_resource_id = module.avm-res-network-virtualnetwork.subnets["DomainControllerSubnet"].resource.output.id
+          private_ip_subnet_resource_id = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.id
           private_ip_address_allocation = "Static"
           // TODO: Use CIDR functions
           private_ip_address = "10.0.1.4"
@@ -109,7 +109,7 @@ module "dc_vm" {
 // Update VNet's DNS server IP to DC IP
 // Note: setting DNS IPs here precludes setting them in the VNet module
 resource "azurerm_virtual_network_dns_servers" "vnet_dns" {
-  virtual_network_id = module.avm-res-network-virtualnetwork.resource_id
+  virtual_network_id = module.virtualnetwork.resource_id
   dns_servers        = [module.dc_vm.network_interfaces.network_interface_1.private_ip_address]
 }
 
