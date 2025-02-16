@@ -13,6 +13,11 @@ module "rt" {
       next_hop_type          = "VirtualAppliance"
       next_hop_in_ip_address = module.firewall.resource.ip_configuration[0].private_ip_address
     }
+    kms = {
+      name             = "kms"
+      address_prefixes = ["40.83.235.53/32", "20.118.99.224/32"]
+      next_hop_type    = "Internet"
+    }
   }
 
   subnet_resource_ids = {
