@@ -96,8 +96,7 @@ module "dc_vm" {
           name                          = "ipconfig1"
           private_ip_subnet_resource_id = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.id
           private_ip_address_allocation = "Static"
-          // TODO: Use CIDR functions
-          private_ip_address = "10.0.1.4"
+          private_ip_address            = cidrhost(module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.properties.addressPrefixes[0], 4)
         }
       }
     }
