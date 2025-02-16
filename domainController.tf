@@ -12,10 +12,9 @@ module "dc_vm" {
   name                               = "soc-dc-vm-01"
   resource_group_name                = azurerm_resource_group.dc_rg.name
   os_type                            = "Windows"
+  zone                               = null
   // Must use a SKU with a local temp disk because the data disk is expected to be "Disk2" (// TODO: confirm)
   sku_size = "Standard_D2ads_v5"
-  // TODO: Is this really required?
-  zone = 1
 
   encryption_at_host_enabled = false
 
@@ -32,14 +31,14 @@ module "dc_vm" {
       type_handler_version       = "2.83"
       auto_upgrade_minor_version = false // Not supported anyway
 
-      #   protectedSettings = jsonencode({
-      #     configurationArguments = {
-      #       AdminCreds = {
-      #         userName = "srvadmin"
-      #         password = "Password1234!"
-      #       }
-      #     }
-      #   })
+      protected_settings = jsonencode({
+        configurationArguments = {
+          AdminCreds = {
+            UserName = "srvadmin"
+            Password = "Password1234!"
+          }
+        }
+      })
       settings = jsonencode(
         {
           wmfVersion = "latest"
@@ -50,11 +49,6 @@ module "dc_vm" {
           }
           configurationArguments = {
             DomainName = "intra.sandbox.com"
-            // TODO: Use protected settings
-            AdminCreds = {
-              UserName = "srvadmin"
-              Password = "Password1234!"
-            }
           }
         }
       )
@@ -70,9 +64,7 @@ module "dc_vm" {
   }
 
   managed_identities = {
-    // TODO: This should be false because we don't want
-    // to make modifications in the Entra tenant
-    system_assigned = true
+    system_assigned = false
   }
 
   // The ADDS provisioning requires a second disk
@@ -110,6 +102,8 @@ module "dc_vm" {
 resource "azurerm_virtual_network_dns_servers" "vnet_dns" {
   virtual_network_id = module.virtualnetwork.resource_id
   dns_servers        = [module.dc_vm.network_interfaces.network_interface_1.private_ip_address]
+
+  depends_on = [module.dc_vm]
 }
 
 # output "ipconfig" {
