@@ -74,13 +74,22 @@ module "fwpolicy_rulecollectiongroup" {
           protocols             = ["UDP", "TCP"]
         },
         {
-          name                  = "OutboundDnsRootServers"
-          description           = "Allow DNS requests from DC subnet to Internet root servers"
+          name                  = "OutboundDnsInternet"
+          description           = "Allow DNS requests from DC subnet to Internet DNS servers (for iterative queries using root servers)"
           destination_addresses = ["*"]
           destination_ports     = ["53"]
           source_addresses      = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.properties.addressPrefixes
           source_ports          = ["*"]
           protocols             = ["UDP", "TCP"]
+        },
+        {
+          name                  = "OutboundAzureKms"
+          description           = "Allow KMS activation"
+          destination_addresses = ["20.118.99.224", "40.83.235.53"]
+          destination_ports     = ["1688"]
+          source_addresses      = module.virtualnetwork.resource.output.properties.addressSpace.addressPrefixes
+          source_ports          = ["*"]
+          protocols             = ["TCP"]
         }
       ]
     }
@@ -115,7 +124,3 @@ module "firewall" {
 
   enable_telemetry = var.telemetry_enabled
 }
-
-# output "vnet" {
-#   value = module.virtualnetwork.resource
-# }
