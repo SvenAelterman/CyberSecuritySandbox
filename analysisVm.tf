@@ -22,7 +22,26 @@ module "analysis_win_vm" {
   #     key_vault_resource_id = module.avm_res_keyvault_vault.resource_id
   #   }
 
-  extensions = {}
+  extensions = {
+    domain_join = {
+      name                    = "domain_join"
+      publisher               = "Microsoft.Compute"
+      type                    = "JsonADDomainExtension"
+      type_handler_version    = "1.3"
+      autoUpgradeMinorVersion = true
+
+      settings = jsonencode({
+        Name    = "intra.sandbox.com"
+        User    = "INTRA\\srvadmin"
+        Restart = "true"
+        Options = "3"
+      })
+
+      protected_settings = jsonencode({
+        Password = "Password1234!"
+      })
+    }
+  }
 
   source_image_reference = {
     publisher = "MicrosoftWindowsDesktop"
@@ -51,4 +70,6 @@ module "analysis_win_vm" {
   }
 
   license_type = "Windows_Client"
+
+  depends_on = [azurerm_virtual_network_dns_servers.vnet_dns]
 }
