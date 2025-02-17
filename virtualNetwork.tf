@@ -12,6 +12,7 @@ module "virtualnetwork" {
   location            = var.location
   name                = "soc-demo-vnet-cnc-01"
   resource_group_name = azurerm_resource_group.network_rg.name
+
   subnets = {
     "${local.subnet_names.AzureFirewallSubnet}" = {
       name             = local.subnet_names.AzureFirewallSubnet
@@ -31,6 +32,7 @@ module "virtualnetwork" {
       network_security_group = {
         id = module.computeSubnet_nsg.resource.id
       }
+      service_endpoints = ["Microsoft.Storage"]
       // TODO: Disable default
       default_outbound_access_enabled = true
     }
@@ -44,5 +46,6 @@ module "virtualnetwork" {
       default_outbound_access_enabled = true
     }
   }
+
   enable_telemetry = var.telemetry_enabled
 }
