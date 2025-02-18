@@ -95,6 +95,8 @@ module "dc_vm" {
   }
 
   license_type = "Windows_Server"
+
+  depends_on = [module.nat_gateway]
 }
 
 // Update VNet's DNS server IP to DC IP
