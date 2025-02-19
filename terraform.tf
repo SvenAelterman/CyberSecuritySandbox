@@ -4,7 +4,8 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.18.0"
     }
-    // TODO: Create backend settings
+    // Local state defaults to ./terraform.tfstate
+    // if user does not run bootstrap.sh in ./bootstrap/ directory
   }
 }
 
