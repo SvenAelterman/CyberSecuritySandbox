@@ -1,7 +1,23 @@
+variable "st_suffix"{
+  default = ["socdemo", "malwarefile"]
+  type = list
+}
+
+locals {
+  unique_st_suffix_len = 24 - (length(var.st_suffix) + length("st"))
+}
+
+module "naming" {
+  source  = "Azure/naming/azurerm"
+  version = "0.4.0"
+  suffix = var.st_suffix
+  unique-length = local.unique_st_suffix_len
+}
+
 module "storage" {
   source = "Azure/avm-res-storage-storageaccount/azurerm"
 
-  name                = "socdemostcnc01"
+  name                = module.naming.storage_account.name_unique
   location            = azurerm_resource_group.analysis_rg.location
   resource_group_name = azurerm_resource_group.analysis_rg.name
 
