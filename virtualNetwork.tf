@@ -33,8 +33,6 @@ module "virtualnetwork" {
         id = module.computeSubnet_nsg.resource.id
       }
       service_endpoints = ["Microsoft.Storage"]
-      // TODO: Disable default
-      default_outbound_access_enabled = true
     }
     "${local.subnet_names.DomainControllerSubnet}" = {
       name             = local.subnet_names.DomainControllerSubnet
@@ -42,8 +40,6 @@ module "virtualnetwork" {
       network_security_group = {
         id = module.domainControllerSubnetSubnet_nsg.resource.id
       }
-      // TODO: Disable default
-      default_outbound_access_enabled = true
     }
   }
 
