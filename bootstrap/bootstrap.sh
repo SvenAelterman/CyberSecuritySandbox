@@ -12,10 +12,8 @@ storage_account_rg=$(echo $storageacct_resourceid | cut -d'/' -f5)
 storage_account_name=$(echo $storageacct_resourceid | cut -d'/' -f9)
 container_name=$(echo $container_resourceid | cut -d'/' -f13)
 
-end_date=$(date -u -d "2 years" '+%Y-%m-%dT%H:%MZ')
-
-storage_account_key=$(az storage account keys list -g $storage_account_rg -n $storage_account_name  --query [0].value -o tsv)
-sastoken=$(az storage container generate-sas -n $container_name --account-key $storage_account_key --account-name $storage_account_name --permissions dlrw --expiry $end_date -o tsv)
+tenant_id=$(terraform output -raw tenant_id )
+client_id=$(terraform output -raw client_id )
 
 tee ../backend.tf<<_EOF
 terraform {
@@ -24,7 +22,9 @@ terraform {
       resource_group_name = "$storage_account_rg"
       storage_account_name = "$storage_account_name"
       container_name = "$container_name"
-      sas_token = "$sastoken"
+      use_azuread_auth     = true
+      tenant_id            = "$tenant_id"
+      client_id            = "$client_id"
   }
 }
 _EOF
