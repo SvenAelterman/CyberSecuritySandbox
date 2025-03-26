@@ -1,0 +1,5 @@
+subscription_id_soc_sandbox = "<replace_with_subscription_id_of_sandbox>"
+org = "<replace_with_abbreviaton_of_organization>"
+unit = "replace_with_abbreviaton_of_unit_or_dept"
+env = "demo"
+
