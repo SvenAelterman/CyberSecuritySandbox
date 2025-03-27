@@ -1,8 +1,8 @@
 # Instructions for Setting Up Remote Backend
 
 A management subscription is required.
-A storage account and container will be created in a resource in that subscription.
-This container will hold the terraform state file for the SOC Demo environment
+A storage account and container will be created in a resource group in that subscription.
+This container will hold the Terraform state file for the SOC Demo environment
 
 ```bash
 push bootstrap
