@@ -1,5 +1,8 @@
 module "dc_vm" {
-  source = "Azure/avm-res-compute-virtualmachine/azurerm"
+  count = var.deploy_dc ? 1 : 0
+
+  source  = "Azure/avm-res-compute-virtualmachine/azurerm"
+  version = "~> 0.18.1"
 
   // TODO: Use Key Vault
   admin_password = "Password1234!"
@@ -10,7 +13,7 @@ module "dc_vm" {
   generate_admin_password_or_ssh_key = false
   location                           = var.location
   name                               = "soc-dc-vm-01"
-  resource_group_name                = azurerm_resource_group.dc_rg.name
+  resource_group_name                = module.dc_rg[0].name
   os_type                            = "Windows"
   zone                               = null
   // Must use a SKU with a local temp disk because the data disk is expected to be "Disk2" (// TODO: confirm)
@@ -96,18 +99,16 @@ module "dc_vm" {
 
   license_type = "Windows_Server"
 
-  depends_on = [module.nat_gateway]
+  depends_on = [module.nat_gateway, module.fwpolicy_rulecollectiongroup]
 }
 
 // Update VNet's DNS server IP to DC IP
 // Note: setting DNS IPs here precludes setting them in the VNet module
 resource "azurerm_virtual_network_dns_servers" "vnet_dns" {
+  count = var.deploy_dc ? 1 : 0
+
   virtual_network_id = module.virtualnetwork.resource_id
-  dns_servers        = [module.dc_vm.network_interfaces.network_interface_1.private_ip_address]
+  dns_servers        = [module.dc_vm[0].network_interfaces.network_interface_1.private_ip_address]
 
   depends_on = [module.dc_vm]
 }
-
-# output "ipconfig" {
-#   value = module.dc_vm.network_interfaces.network_interface_1
-# }
