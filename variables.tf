@@ -5,8 +5,16 @@ variable "subscription_id_soc_sandbox" {
 variable "vnet_address_space" {
   type    = string
   default = "10.0.0.0/16"
-}
 
+  validation {
+    condition     = tonumber(split("/", var.vnet_address_space)[1]) <= 23
+    error_message = "The provided address space '${var.vnet_address_space}' must be at least /23."
+  }
+  validation {
+    condition     = can(cidrhost(var.vnet_address_space, 32))
+    error_message = "Must be valid IPv4 CIDR."
+  }
+}
 variable "location" {
   type        = string
   description = "The Azure region where the resources will be deployed."
