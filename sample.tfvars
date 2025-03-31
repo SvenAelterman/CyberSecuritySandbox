@@ -11,3 +11,7 @@ workload_name = "soc"
 environment   = "sbx"
 instance      = 1
 location      = "eastus"
+
+// Use this if you are unable or unwilling to use the data.http.runner_ip data source,
+// which calls ipecho.net to get the public IP of the runner.
+remote_access_ip = "1.2.3.4"
