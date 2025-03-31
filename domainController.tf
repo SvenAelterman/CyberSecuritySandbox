@@ -4,27 +4,24 @@ module "dc_vm" {
   source  = "Azure/avm-res-compute-virtualmachine/azurerm"
   version = "~> 0.18.1"
 
-  // TODO: Use Key Vault
-  admin_password = "Password1234!"
-  #admin_credential_key_vault_resource_id = module.avm_res_keyvault_vault.resource_id
-  admin_username = "srvadmin"
+  location            = var.location
+  name                = "soc-dc-vm-01"
+  resource_group_name = module.dc_rg[0].name
+  tags                = var.tags
 
-  enable_telemetry                   = var.telemetry_enabled
-  generate_admin_password_or_ssh_key = false
-  location                           = var.location
-  name                               = "soc-dc-vm-01"
-  resource_group_name                = module.dc_rg[0].name
   os_type                            = "Windows"
+  generate_admin_password_or_ssh_key = false
   zone                               = null
   // Must use a SKU with a local temp disk because the data disk is expected to be "Disk2" (// TODO: confirm)
-  sku_size = "Standard_D2ads_v5"
+  sku_size     = "Standard_D2ads_v5"
+  license_type = "Windows_Server"
+
+
+  // TODO: Use Key Vault
+  admin_password = "Password1234!"
+  admin_username = "srvadmin"
 
   encryption_at_host_enabled = false
-
-  // TODO: Re-enable?
-  #   generated_secrets_key_vault_secret_config = {
-  #     key_vault_resource_id = module.avm_res_keyvault_vault.resource_id
-  #   }
 
   extensions = {
     create_ad_forest = { // TODO: Consider using Machine Configuration instead?
@@ -97,7 +94,7 @@ module "dc_vm" {
     }
   }
 
-  license_type = "Windows_Server"
+  enable_telemetry = var.telemetry_enabled
 
   depends_on = [module.nat_gateway, module.fwpolicy_rulecollectiongroup]
 }

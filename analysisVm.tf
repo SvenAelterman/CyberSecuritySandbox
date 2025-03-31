@@ -4,27 +4,22 @@ module "analysis_win_vm" {
   source  = "Azure/avm-res-compute-virtualmachine/azurerm"
   version = "~> 0.18.1"
 
+  name                = "soc-vm-01"
+  location            = var.location
+  resource_group_name = module.analysis_rg.name
+  tags                = var.tags
+
   // TODO: Use Key Vault
   admin_password = "Password1234!"
-  #admin_credential_key_vault_resource_id = module.avm_res_keyvault_vault.resource_id
   admin_username = "srvadmin"
 
-  generate_admin_password_or_ssh_key = false
-  location                           = var.location
-  name                               = "soc-vm-01"
-  resource_group_name                = module.analysis_rg.name
   os_type                            = "Windows"
   sku_size                           = "Standard_D2as_v5"
   zone                               = null
-
-  encryption_at_host_enabled = false
+  generate_admin_password_or_ssh_key = false
+  encryption_at_host_enabled         = false
 
   license_type = "Windows_Client"
-
-  // TODO: Re-enable?
-  #   generated_secrets_key_vault_secret_config = {
-  #     key_vault_resource_id = module.avm_res_keyvault_vault.resource_id
-  #   }
 
   extensions = {
     domain_join = {

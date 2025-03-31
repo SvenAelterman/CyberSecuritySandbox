@@ -4,10 +4,10 @@ module "rt" {
   source  = "Azure/avm-res-network-routetable/azurerm"
   version = "~> 0.4.1"
 
-  enable_telemetry    = var.telemetry_enabled
-  name                = "soc-demo-rt-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "rt")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
+  tags                = var.tags
 
   routes = {
     default = {
@@ -32,6 +32,8 @@ module "rt" {
     subnet1 = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.id,
     subnet2 = module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id
   }
+
+  enable_telemetry = var.telemetry_enabled
 
   depends_on = [module.firewall]
 }

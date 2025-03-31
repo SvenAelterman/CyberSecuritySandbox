@@ -8,10 +8,12 @@ module "virtualnetwork" {
 
   // DO NOT SET DNS IPs HERE
 
-  address_space       = [var.vnet_address_space]
   location            = module.network_rg.resource.location
-  name                = "soc-demo-vnet-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "vnet")
   resource_group_name = module.network_rg.name
+  tags                = var.tags
+
+  address_space = [var.vnet_address_space]
 
   subnets = {
     "${local.subnet_names.AzureFirewallSubnet}" = {

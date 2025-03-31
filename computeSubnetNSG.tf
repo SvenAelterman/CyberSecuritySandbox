@@ -19,9 +19,10 @@ module "computeSubnet_nsg" {
   source  = "Azure/avm-res-network-networksecuritygroup/azurerm"
   version = "~> 0.4.0"
 
-  name                = "computeSubnet-demo-nsg-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "nsg-computeSubnet")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
+  tags                = var.tags
 
   security_rules = local.computeSubnet_nsg_rules
 

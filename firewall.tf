@@ -4,13 +4,14 @@ module "fw_public_ip" {
   source  = "Azure/avm-res-network-publicipaddress/azurerm"
   version = "~> 0.2.0"
 
-  name                = "soc-demo-fw-pip1-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "pip-fw1")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  tags                = var.tags
 
-  zones = ["1", "2", "3"]
+  allocation_method = "Static"
+  sku               = "Standard"
+  zones             = ["1", "2", "3"]
 
   enable_telemetry = var.telemetry_enabled
 }
@@ -21,13 +22,14 @@ module "fw_mgmt_public_ip" {
   source  = "Azure/avm-res-network-publicipaddress/azurerm"
   version = "~> 0.2.0"
 
-  name                = "soc-demo-fw-pip2-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "pip-fw2")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  tags                = var.tags
 
-  zones = ["1", "2", "3"]
+  allocation_method = "Static"
+  sku               = "Standard"
+  zones             = ["1", "2", "3"]
 
   enable_telemetry = var.telemetry_enabled
 }
@@ -38,9 +40,10 @@ module "fwpolicy" {
   source  = "Azure/avm-res-network-firewallpolicy/azurerm"
   version = "~> 0.3.3"
 
-  name                = "soc-demo-fwpol-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "fwpol")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
+  tags                = var.tags
 
   firewall_policy_sku = "Basic"
 
@@ -113,12 +116,14 @@ module "firewall" {
   source  = "Azure/avm-res-network-azurefirewall/azurerm"
   version = "~> 0.3.0"
 
-  name                = "soc-demo-fw-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "fw")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
-  firewall_sku_tier   = "Basic"
-  firewall_sku_name   = "AZFW_VNet"
-  firewall_zones      = ["1", "2", "3"]
+  tags                = var.tags
+
+  firewall_sku_tier = "Basic"
+  firewall_sku_name = "AZFW_VNet"
+  firewall_zones    = ["1", "2", "3"]
 
   firewall_ip_configuration = [
     {

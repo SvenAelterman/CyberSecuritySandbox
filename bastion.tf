@@ -4,11 +4,13 @@ module "bastion_public_ip" {
   source  = "Azure/avm-res-network-publicipaddress/azurerm"
   version = "~> 0.2.0"
 
-  name                = "soc-demo-bastion-pip1-cnc-01"
+  name                = replace(local.naming_structure, "{resourceType}", "pip-bas")
   location            = module.network_rg.resource.location
   resource_group_name = module.network_rg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  tags                = var.tags
+
+  allocation_method = "Static"
+  sku               = "Standard"
 
   zones = ["1", "2", "3"]
 
@@ -21,9 +23,11 @@ module "bastion" {
   source  = "Azure/avm-res-network-bastionhost/azurerm"
   version = "~> 0.6.0"
 
-  name                   = "soc-demo-bastion-cnc-01"
-  location               = module.network_rg.resource.location
-  resource_group_name    = module.network_rg.name
+  name                = replace(local.naming_structure, "{resourceType}", "bas")
+  location            = module.network_rg.resource.location
+  resource_group_name = module.network_rg.name
+  tags                = var.tags
+
   copy_paste_enabled     = true
   file_copy_enabled      = false
   sku                    = "Basic"
