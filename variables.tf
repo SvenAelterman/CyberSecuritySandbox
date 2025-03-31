@@ -75,3 +75,9 @@ variable "storage_account_name_suffix" {
   type        = list(any)
   description = "The suffix(es) for the storage account name. If not provided, it will default to the region and instance number."
 }
+
+variable "remote_access_ip" {
+  type        = string
+  default     = ""
+  description = "The IP address which will be allowed access to the storage account."
+}

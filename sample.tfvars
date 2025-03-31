@@ -6,3 +6,8 @@ deploy_natgw      = true
 deploy_windows_vm = true
 
 subscription_id_soc_sandbox = "00000000-0000-0000-0000-000000000000"
+
+workload_name = "soc"
+environment   = "sbx"
+instance      = 1
+location      = "eastus"
