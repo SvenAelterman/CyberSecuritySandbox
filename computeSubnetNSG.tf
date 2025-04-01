@@ -16,12 +16,13 @@ locals {
 
 # This is the module call
 module "computeSubnet_nsg" {
+  source  = "Azure/avm-res-network-networksecuritygroup/azurerm"
+  version = "~> 0.4.0"
 
-  source = "Azure/avm-res-network-networksecuritygroup/azurerm"
-
-  resource_group_name = azurerm_resource_group.network_rg.name
-  name                = "computeSubnet-demo-nsg-cnc-01"
-  location            = var.location
+  name                = replace(local.naming_structure, "{resourceType}", "nsg-computeSubnet")
+  location            = module.network_rg.resource.location
+  resource_group_name = module.network_rg.name
+  tags                = var.tags
 
   security_rules = local.computeSubnet_nsg_rules
 

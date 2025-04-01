@@ -1,9 +1,13 @@
 module "nat_gateway" {
-  source = "Azure/avm-res-network-natgateway/azurerm"
+  count = var.deploy_natgw ? 1 : 0
 
-  name                = "soc-demo-ng-cnc-01"
-  resource_group_name = azurerm_resource_group.network_rg.name
-  location            = azurerm_resource_group.network_rg.location
+  source  = "Azure/avm-res-network-natgateway/azurerm"
+  version = "~> 0.2.1"
+
+  name                = replace(local.naming_structure, "{resourceType}", "ng")
+  resource_group_name = module.network_rg.name
+  location            = module.network_rg.resource.location
+  tags                = var.tags
 
   // TODO: Only associate with ComputeSubnet and DomainControllerSubnet if no firewall deployed
   subnet_associations = {
