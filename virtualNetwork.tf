@@ -1,6 +1,32 @@
-locals {
-  vnet_address_cidr = tonumber(split("/", var.vnet_address_space)[1])
+module "subnet_addrs" {
+  source = "hashicorp/subnets/cidr"
+  version = "~> 1.0.0"
+
+  base_cidr_block = var.vnet_address_space
+  networks = [
+    {
+      name     = "AzureFirewallSubnet"
+      new_bits = 10
+    },
+    {
+      name     = "AzureFirewallManagementSubnet"
+      new_bits = 10
+    },
+    {
+      name     = "AzureBastionSubnet"
+      new_bits = 10
+    },
+    {
+      name     = "ComputeSubnet"
+      new_bits = 10
+    },
+    {
+      name     = "DomainControllerSubnet"
+      new_bits = 10
+    },
+  ]
 }
+
 
 module "virtualnetwork" {
   source  = "Azure/avm-res-network-virtualnetwork/azurerm"
@@ -16,29 +42,29 @@ module "virtualnetwork" {
   address_space = [var.vnet_address_space]
 
   subnets = {
-    "${"AzureFirewallSubnet"}" = {
+    AzureFirewallSubnet = {
       name             = "AzureFirewallSubnet"
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 0)]
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["AzureFirewallSubnet"]]
     }
-    "${"AzureFirewallManagementSubnet"}" = {
+    AzureFirewallManagementSubnet = {
       name             = "AzureFirewallManagementSubnet"
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 1)]
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["AzureFirewallManagementSubnet"]]
     }
-    "${"AzureBastionSubnet"}" = {
+    AzureBastionSubnet = {
       name             = "AzureBastionSubnet"
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 2)]
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["AzureBastionSubnet"]]
     }
-    "${"ComputeSubnet"}" = {
+    ComputeSubnet = {
       name             = "ComputeSubnet"
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 3)]
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["ComputeSubnet"]]
       network_security_group = {
         id = module.computeSubnet_nsg.resource.id
       }
       service_endpoints = ["Microsoft.Storage"]
     }
-    "${"DomainControllerSubnet"}" = {
+    DomainControllerSubnet = {
       name             = "DomainControllerSubnet"
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 4)]
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["DomainControllerSubnet"]]
       network_security_group = {
         id = module.domainControllerSubnetSubnet_nsg.resource.id
       }
