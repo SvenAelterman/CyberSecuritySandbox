@@ -2,6 +2,36 @@ locals {
   vnet_address_cidr = tonumber(split("/", var.vnet_address_space)[1])
 }
 
+module "subnet_addrs" {
+  source  = "hashicorp/subnets/cidr"
+  version = "~> 1.0.0"
+
+  base_cidr_block = var.vnet_address_space
+  networks = [
+    {
+      name     = "AzureFirewallSubnet"
+      new_bits = 26 - local.vnet_address_cidr
+    },
+    {
+      name     = "AzureFirewallManagementSubnet"
+      new_bits = 26 - local.vnet_address_cidr
+    },
+    {
+      name     = "AzureBastionSubnet"
+      new_bits = 26 - local.vnet_address_cidr
+    },
+    {
+      name     = "ComputeSubnet"
+      new_bits = 26 - local.vnet_address_cidr
+    },
+    {
+      name     = "DomainControllerSubnet"
+      new_bits = 26 - local.vnet_address_cidr
+    },
+  ]
+}
+
+
 module "virtualnetwork" {
   source  = "Azure/avm-res-network-virtualnetwork/azurerm"
   version = "~> 0.8.1"
@@ -16,29 +46,29 @@ module "virtualnetwork" {
   address_space = [var.vnet_address_space]
 
   subnets = {
-    "${local.subnet_names.AzureFirewallSubnet}" = {
-      name             = local.subnet_names.AzureFirewallSubnet
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 0)]
+    AzureFirewallSubnet = {
+      name             = "AzureFirewallSubnet"
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["AzureFirewallSubnet"]]
     }
-    "${local.subnet_names.AzureFirewallManagementSubnet}" = {
-      name             = local.subnet_names.AzureFirewallManagementSubnet
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 1)]
+    AzureFirewallManagementSubnet = {
+      name             = "AzureFirewallManagementSubnet"
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["AzureFirewallManagementSubnet"]]
     }
-    "${local.subnet_names.AzureBastionSubnet}" = {
-      name             = local.subnet_names.AzureBastionSubnet
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 2)]
+    AzureBastionSubnet = {
+      name             = "AzureBastionSubnet"
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["AzureBastionSubnet"]]
     }
-    "${local.subnet_names.ComputeSubnet}" = {
-      name             = local.subnet_names.ComputeSubnet
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 3)]
+    ComputeSubnet = {
+      name             = "ComputeSubnet"
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["ComputeSubnet"]]
       network_security_group = {
         id = module.computeSubnet_nsg.resource.id
       }
       service_endpoints = ["Microsoft.Storage"]
     }
-    "${local.subnet_names.DomainControllerSubnet}" = {
-      name             = local.subnet_names.DomainControllerSubnet
-      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 4)]
+    DomainControllerSubnet = {
+      name             = "DomainControllerSubnet"
+      address_prefixes = [module.subnet_addrs.network_cidr_blocks["DomainControllerSubnet"]]
       network_security_group = {
         id = module.domainControllerSubnetSubnet_nsg.resource.id
       }

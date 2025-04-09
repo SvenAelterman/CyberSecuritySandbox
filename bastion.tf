@@ -39,7 +39,7 @@ module "bastion" {
 
   ip_configuration = {
     name                 = "bastion-ipconfig"
-    subnet_id            = module.virtualnetwork.subnets[local.subnet_names.AzureBastionSubnet].resource.output.id
+    subnet_id            = module.virtualnetwork.subnets["AzureBastionSubnet"].resource.output.id
     public_ip_address_id = module.bastion_public_ip[0].public_ip_id
   }
 

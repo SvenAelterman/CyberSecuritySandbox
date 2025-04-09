@@ -29,8 +29,8 @@ module "rt" {
   }
 
   subnet_resource_ids = {
-    subnet1 = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.id,
-    subnet2 = module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id
+    subnet1 = module.virtualnetwork.subnets["DomainControllerSubnet"].resource.output.id,
+    subnet2 = module.virtualnetwork.subnets["ComputeSubnet"].resource_id
   }
 
   enable_telemetry = var.telemetry_enabled
