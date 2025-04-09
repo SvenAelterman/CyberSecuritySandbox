@@ -86,9 +86,9 @@ module "dc_vm" {
       ip_configurations = {
         ip_configuration_1 = {
           name                          = "ipconfig1"
-          private_ip_subnet_resource_id = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.id
+          private_ip_subnet_resource_id = module.virtualnetwork.subnets["DomainControllerSubnet"].resource.output.id
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.properties.addressPrefixes[0], 4)
+          private_ip_address            = cidrhost(module.virtualnetwork.subnets["DomainControllerSubnet"].resource.output.properties.addressPrefixes[0], 4)
         }
       }
     }

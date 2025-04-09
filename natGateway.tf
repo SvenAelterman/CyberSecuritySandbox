@@ -12,13 +12,13 @@ module "nat_gateway" {
   // TODO: Only associate with ComputeSubnet and DomainControllerSubnet if no firewall deployed
   subnet_associations = {
     computeSubnet = {
-      resource_id = module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id
+      resource_id = module.virtualnetwork.subnets["ComputeSubnet"].resource_id
     }
     AzureFirewallSubnet = {
-      resource_id = module.virtualnetwork.subnets[local.subnet_names.AzureFirewallSubnet].resource_id
+      resource_id = module.virtualnetwork.subnets["AzureFirewallSubnet"].resource_id
     }
     domainControllerSubnet = {
-      resource_id = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource_id
+      resource_id = module.virtualnetwork.subnets["DomainControllerSubnet"].resource_id
     }
   }
 

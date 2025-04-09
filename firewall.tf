@@ -83,7 +83,7 @@ module "fwpolicy_rulecollectiongroup" {
           description           = "Allow DNS requests from DC subnet to Azure DNS"
           destination_addresses = ["168.63.129.16"]
           destination_ports     = ["53"]
-          source_addresses      = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.properties.addressPrefixes
+          source_addresses      = module.virtualnetwork.subnets["DomainControllerSubnet"].resource.output.properties.addressPrefixes
           source_ports          = ["*"]
           protocols             = ["UDP", "TCP"]
         },
@@ -92,7 +92,7 @@ module "fwpolicy_rulecollectiongroup" {
           description           = "Allow DNS requests from DC subnet to Internet DNS servers (for iterative queries using root servers)"
           destination_addresses = ["*"]
           destination_ports     = ["53"]
-          source_addresses      = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource.output.properties.addressPrefixes
+          source_addresses      = module.virtualnetwork.subnets["DomainControllerSubnet"].resource.output.properties.addressPrefixes
           source_ports          = ["*"]
           protocols             = ["UDP", "TCP"]
         },
@@ -128,14 +128,14 @@ module "firewall" {
   firewall_ip_configuration = [
     {
       name                 = "ipconfig1"
-      subnet_id            = module.virtualnetwork.subnets[local.subnet_names.AzureFirewallSubnet].resource.output.id
+      subnet_id            = module.virtualnetwork.subnets["AzureFirewallSubnet"].resource.output.id
       public_ip_address_id = module.fw_public_ip[0].public_ip_id
     }
   ]
 
   firewall_management_ip_configuration = {
     name                 = "ipconfig_mgmt"
-    subnet_id            = module.virtualnetwork.subnets[local.subnet_names.AzureFirewallManagementSubnet].resource.output.id
+    subnet_id            = module.virtualnetwork.subnets["AzureFirewallManagementSubnet"].resource.output.id
     public_ip_address_id = module.fw_mgmt_public_ip[0].public_ip_id
   }
 

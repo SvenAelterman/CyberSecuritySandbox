@@ -41,7 +41,7 @@ module "storage" {
   network_rules = {
     bypass                     = ["AzureServices"]
     default_action             = "Deny"
-    virtual_network_subnet_ids = [module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id]
+    virtual_network_subnet_ids = [module.virtualnetwork.subnets["ComputeSubnet"].resource_id]
     ip_rules                   = local.storage_account_firewall_allowed_ip
   }
 
