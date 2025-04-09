@@ -1,28 +1,32 @@
+locals {
+  vnet_address_cidr = tonumber(split("/", var.vnet_address_space)[1])
+}
+
 module "subnet_addrs" {
-  source = "hashicorp/subnets/cidr"
+  source  = "hashicorp/subnets/cidr"
   version = "~> 1.0.0"
 
   base_cidr_block = var.vnet_address_space
   networks = [
     {
       name     = "AzureFirewallSubnet"
-      new_bits = 10
+      new_bits = 26 - local.vnet_address_cidr
     },
     {
       name     = "AzureFirewallManagementSubnet"
-      new_bits = 10
+      new_bits = 26 - local.vnet_address_cidr
     },
     {
       name     = "AzureBastionSubnet"
-      new_bits = 10
+      new_bits = 26 - local.vnet_address_cidr
     },
     {
       name     = "ComputeSubnet"
-      new_bits = 10
+      new_bits = 26 - local.vnet_address_cidr
     },
     {
       name     = "DomainControllerSubnet"
-      new_bits = 10
+      new_bits = 26 - local.vnet_address_cidr
     },
   ]
 }
