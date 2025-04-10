@@ -1,34 +1,36 @@
 locals {
-  vnet_address_space = "10.0.0.0/16"
-  vnet_address_cidr  = tonumber(split("/", local.vnet_address_space)[1])
+  vnet_address_cidr = tonumber(split("/", var.vnet_address_space)[1])
 }
 
 module "virtualnetwork" {
-  source = "Azure/avm-res-network-virtualnetwork/azurerm"
+  source  = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "~> 0.8.1"
 
   // DO NOT SET DNS IPs HERE
 
-  address_space       = [local.vnet_address_space]
-  location            = var.location
-  name                = "soc-demo-vnet-cnc-01"
-  resource_group_name = azurerm_resource_group.network_rg.name
+  location            = module.network_rg.resource.location
+  name                = replace(local.naming_structure, "{resourceType}", "vnet")
+  resource_group_name = module.network_rg.name
+  tags                = var.tags
+
+  address_space = [var.vnet_address_space]
 
   subnets = {
     "${local.subnet_names.AzureFirewallSubnet}" = {
       name             = local.subnet_names.AzureFirewallSubnet
-      address_prefixes = [cidrsubnet(local.vnet_address_space, 26 - 32 + local.vnet_address_cidr, 0)]
+      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 0)]
     }
     "${local.subnet_names.AzureFirewallManagementSubnet}" = {
       name             = local.subnet_names.AzureFirewallManagementSubnet
-      address_prefixes = [cidrsubnet(local.vnet_address_space, 26 - 32 + local.vnet_address_cidr, 1)]
+      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 1)]
     }
     "${local.subnet_names.AzureBastionSubnet}" = {
       name             = local.subnet_names.AzureBastionSubnet
-      address_prefixes = [cidrsubnet(local.vnet_address_space, 26 - 32 + local.vnet_address_cidr, 2)]
+      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 2)]
     }
     "${local.subnet_names.ComputeSubnet}" = {
       name             = local.subnet_names.ComputeSubnet
-      address_prefixes = [cidrsubnet(local.vnet_address_space, 26 - 32 + local.vnet_address_cidr, 3)]
+      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 3)]
       network_security_group = {
         id = module.computeSubnet_nsg.resource.id
       }
@@ -36,7 +38,7 @@ module "virtualnetwork" {
     }
     "${local.subnet_names.DomainControllerSubnet}" = {
       name             = local.subnet_names.DomainControllerSubnet
-      address_prefixes = [cidrsubnet(local.vnet_address_space, 26 - 32 + local.vnet_address_cidr, 4)]
+      address_prefixes = [cidrsubnet(var.vnet_address_space, 26 - local.vnet_address_cidr, 4)]
       network_security_group = {
         id = module.domainControllerSubnetSubnet_nsg.resource.id
       }

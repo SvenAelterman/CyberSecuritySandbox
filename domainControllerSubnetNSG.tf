@@ -183,10 +183,15 @@ locals {
 
 # This is the module call
 module "domainControllerSubnetSubnet_nsg" {
-  source              = "Azure/avm-res-network-networksecuritygroup/azurerm"
-  resource_group_name = azurerm_resource_group.network_rg.name
-  name                = "domainControllerSubnet-demo-nsg-cnc-01"
-  location            = var.location
-  security_rules      = local.domainControllerSubnet_nsg_rules
-  enable_telemetry    = var.telemetry_enabled
+  source  = "Azure/avm-res-network-networksecuritygroup/azurerm"
+  version = "~> 0.4.0"
+
+  name                = replace(local.naming_structure, "{resourceType}", "nsg-domainControllerSubnet")
+  location            = module.network_rg.resource.location
+  resource_group_name = module.network_rg.name
+  tags                = var.tags
+
+  security_rules = local.domainControllerSubnet_nsg_rules
+
+  enable_telemetry = var.telemetry_enabled
 }

@@ -1,11 +1,16 @@
 module "bastion_public_ip" {
-  source = "Azure/avm-res-network-publicipaddress/azurerm"
+  count = var.deploy_bastion ? 1 : 0
 
-  name                = "soc-demo-bastion-pip1-cnc-01"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.network_rg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  source  = "Azure/avm-res-network-publicipaddress/azurerm"
+  version = "~> 0.2.0"
+
+  name                = replace(local.naming_structure, "{resourceType}", "pip-bas")
+  location            = module.network_rg.resource.location
+  resource_group_name = module.network_rg.name
+  tags                = var.tags
+
+  allocation_method = "Static"
+  sku               = "Standard"
 
   zones = ["1", "2", "3"]
 
@@ -13,12 +18,16 @@ module "bastion_public_ip" {
 }
 
 module "bastion" {
-  source = "Azure/avm-res-network-bastionhost/azurerm"
+  count = var.deploy_bastion ? 1 : 0
 
-  enable_telemetry       = var.telemetry_enabled
-  name                   = "soc-demo-bastion-cnc-01"
-  location               = azurerm_resource_group.network_rg.location
-  resource_group_name    = azurerm_resource_group.network_rg.name
+  source  = "Azure/avm-res-network-bastionhost/azurerm"
+  version = "~> 0.6.0"
+
+  name                = replace(local.naming_structure, "{resourceType}", "bas")
+  location            = module.network_rg.resource.location
+  resource_group_name = module.network_rg.name
+  tags                = var.tags
+
   copy_paste_enabled     = true
   file_copy_enabled      = false
   sku                    = "Basic"
@@ -31,8 +40,10 @@ module "bastion" {
   ip_configuration = {
     name                 = "bastion-ipconfig"
     subnet_id            = module.virtualnetwork.subnets[local.subnet_names.AzureBastionSubnet].resource.output.id
-    public_ip_address_id = module.bastion_public_ip.public_ip_id
+    public_ip_address_id = module.bastion_public_ip[0].public_ip_id
   }
+
+  enable_telemetry = var.telemetry_enabled
 
   // To enable Kerberos, deploy Bastion AFTER setting custom DNS
   // https://learn.microsoft.com/en-us/azure/bastion/kerberos-authentication-portal

@@ -9,4 +9,17 @@ locals {
     DomainControllerSubnet        = "DomainControllerSubnet"
     ComputeSubnet                 = "ComputeSubnet"
   }
+
+  instance_formatted = format("%02d", var.instance)
+  naming_structure   = replace(replace(replace(replace(var.naming_convention, "{workloadName}", var.workload_name), "{environment}", var.environment), "{region}", local.short_locations[var.location]), "{instance}", local.instance_formatted)
+
+  storage_account_firewall_allowed_ip = length(var.remote_access_ip) > 0 ? [var.remote_access_ip] : [data.http.runner_ip[0].response_body]
+}
+
+locals {
+  short_locations = {
+    canadacentral = "cnc"
+    eastus        = "eus"
+    westus        = "wus"
+  }
 }
