@@ -16,6 +16,30 @@ module "naming" {
 
 data "azurerm_client_config" "current" {}
 
+locals {
+  user_principals         = [data.azurerm_client_config.current.object_id]
+  user_managed_identities = length(var.managed_id) > 0 ? [var.managed_id] : []
+  any_principals          = toset(concat(local.user_principals, local.user_managed_identities))
+}
+
+
+resource "azurerm_role_assignment" "storage_account_contributor" {
+  for_each                         = local.any_principals
+  scope                            = module.storage.resource_id
+  role_definition_name             = "Storage Account Contributor"
+  principal_id                     = each.key
+  skip_service_principal_aad_check = false
+}
+
+resource "azurerm_role_assignment" "storage_blob_data_contributor" {
+  for_each                         = local.any_principals
+  scope                            = module.storage.containers["tfstate"].id
+  role_definition_name             = "Storage Blob Data Contributor"
+  principal_id                     = each.key
+  skip_service_principal_aad_check = false
+}
+
+
 module "storage" {
   source = "Azure/avm-res-storage-storageaccount/azurerm"
 
@@ -33,30 +57,13 @@ module "storage" {
     tfstate = {
       name                  = "tfstate"
       container_access_type = "private"
-
-      role_assignments = {
-        storage_blob_data_owner = {
-          role_definition_id_or_name       = "Storage Blob Data Owner"
-          principal_id                     = coalesce(var.managed_id, data.azurerm_client_config.current.object_id)
-          skip_service_principal_aad_check = false
-        }
-      }
     }
-
   }
 
   network_rules = {
     bypass         = ["AzureServices"]
     default_action = "Deny"
     ip_rules       = [data.http.runner_ip.response_body]
-  }
-
-  role_assignments = {
-    storage_account_owner = {
-      role_definition_id_or_name       = "Owner"
-      principal_id                     = coalesce(var.managed_id, data.azurerm_client_config.current.object_id)
-      skip_service_principal_aad_check = false
-    }
   }
 
   enable_telemetry = var.telemetry_enabled
