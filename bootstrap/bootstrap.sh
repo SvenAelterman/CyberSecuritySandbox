@@ -17,7 +17,7 @@ client_id=$(terraform output -raw client_id )
 tee ../backend.tf<<_EOF
 terraform {
   backend "azurerm" {
-      key  = "soc_demo.tfstate"
+      key  = "terraform.tfstate"
       resource_group_name = "$storage_account_rg"
       storage_account_name = "$storage_account_name"
       container_name = "$container_name"
