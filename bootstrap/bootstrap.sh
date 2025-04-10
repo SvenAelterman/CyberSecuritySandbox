@@ -5,11 +5,10 @@ terraform init
 terraform plan -out bootstrap.tfplan -var-file ./bootstrap.tfvars
 terraform apply "bootstrap.tfplan"
 
-storageacct_resourceid=$(terraform output -raw storageacct_resourceid )
 container_resourceid=$(terraform output -raw container_resourceid)
 
-storage_account_rg=$(echo $storageacct_resourceid | cut -d'/' -f5)
-storage_account_name=$(echo $storageacct_resourceid | cut -d'/' -f9)
+storage_account_rg=$(echo $container_resourceid | cut -d'/' -f5)
+storage_account_name=$(echo $container_resourceid | cut -d'/' -f9)
 container_name=$(echo $container_resourceid | cut -d'/' -f13)
 
 tenant_id=$(terraform output -raw tenant_id )
