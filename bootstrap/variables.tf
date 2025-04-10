@@ -4,8 +4,8 @@ variable "subscription_id_bootstrap" {
 
 //TODO: Implement use of this variable
 variable "managed_id" {
-  default = ""
-  type    = string
+  default     = ""
+  type        = string
   description = "Managed identity that will be given access to the Terraform state file."
 }
 
