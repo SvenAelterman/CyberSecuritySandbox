@@ -22,8 +22,6 @@ terraform {
       storage_account_name = "$storage_account_name"
       container_name = "$container_name"
       use_azuread_auth     = true
-      tenant_id            = "$tenant_id"
-      client_id            = "$client_id"
   }
 }
 _EOF
