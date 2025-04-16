@@ -21,6 +21,7 @@ module "network_rg" {
   location = var.location
   tags     = var.tags
 }
+
 module "dc_rg" {
   count = var.deploy_dc ? 1 : 0
 
