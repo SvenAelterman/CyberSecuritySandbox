@@ -2,7 +2,6 @@ variable "subscription_id_bootstrap" {
   type = string
 }
 
-//TODO: Implement use of this variable
 variable "managed_id" {
   default     = ""
   type        = string
@@ -18,4 +17,3 @@ variable "telemetry_enabled" {
   default = false
   type    = bool
 }
-
