@@ -2,7 +2,7 @@
 
 terraform init
 
-terraform plan -out bootstrap.tfplan
+terraform plan -out bootstrap.tfplan -var-file ./bootstrap.tfvars
 terraform apply "bootstrap.tfplan"
 
 container_resourceid=$(terraform output -raw container_resourceid)
@@ -17,10 +17,10 @@ client_id=$(terraform output -raw client_id )
 tee ../backend.tf<<_EOF
 terraform {
   backend "azurerm" {
-      key                  = "terraform.tfstate"
-      resource_group_name  = "$storage_account_rg"
+      key  = "terraform.tfstate"
+      resource_group_name = "$storage_account_rg"
       storage_account_name = "$storage_account_name"
-      container_name       = "$container_name"
+      container_name = "$container_name"
       use_azuread_auth     = true
   }
 }
