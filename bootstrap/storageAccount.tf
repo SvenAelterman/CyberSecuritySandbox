@@ -22,7 +22,6 @@ locals {
   any_principals          = toset(concat(local.user_principals, local.user_managed_identities))
 }
 
-
 resource "azurerm_role_assignment" "storage_account_contributor" {
   for_each                         = local.any_principals
   scope                            = module.storage.resource_id
@@ -39,15 +38,15 @@ resource "azurerm_role_assignment" "storage_blob_data_contributor" {
   skip_service_principal_aad_check = false
 }
 
-
 module "storage" {
-  source = "Azure/avm-res-storage-storageaccount/azurerm"
+  source  = "Azure/avm-res-storage-storageaccount/azurerm"
+  version = "~> 0.4.0"
 
   name                = module.naming.storage_account.name_unique
   location            = azurerm_resource_group.bootstrap.location
   resource_group_name = azurerm_resource_group.bootstrap.name
 
-  account_replication_type          = "LRS"
+  account_replication_type          = "GRS"
   default_to_oauth_authentication   = true
   infrastructure_encryption_enabled = true
   shared_access_key_enabled         = true
