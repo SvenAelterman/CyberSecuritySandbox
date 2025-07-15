@@ -9,7 +9,7 @@ push bootstrap
 
 management_subscription_id="<azure_subscription_id_for_terraform_backend_state>"
 
-tee ./bootstrap.tfvars<<_EOF
+tee ./bootstrap.auto.tfvars<<_EOF
 subscription_id_bootstrap = "$management_subscription_id"
 _EOF
 
