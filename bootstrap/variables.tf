@@ -2,10 +2,11 @@ variable "subscription_id_bootstrap" {
   type = string
 }
 
-variable "managed_id" {
+
+variable "system_assigned_managed_id" {
   default     = ""
   type        = string
-  description = "Managed identity that will be given access to the Terraform state file."
+  description = "System assigned managed identity that will be given access to the Terraform state file. If empty, a user assigned managed identity will be created."
 }
 
 variable "location" {

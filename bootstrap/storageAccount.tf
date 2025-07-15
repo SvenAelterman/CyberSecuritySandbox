@@ -1,26 +1,18 @@
-variable "st_suffix" {
-  default = ["socdemo", "state"]
-  type    = list(any)
-}
-
-locals {
-  unique_st_suffix_len = 24 - (length(var.st_suffix) + length("st"))
-}
-
-module "naming" {
-  source        = "Azure/naming/azurerm"
-  version       = "0.4.0"
-  suffix        = var.st_suffix
-  unique-length = local.unique_st_suffix_len
+resource "random_string" "unique_name" {
+  length  = 3
+  special = false
+  upper   = false
+  numeric = false
 }
 
 data "azurerm_client_config" "current" {}
 
 locals {
-  user_principals         = [data.azurerm_client_config.current.object_id]
-  user_managed_identities = length(var.managed_id) > 0 ? [var.managed_id] : []
-  any_principals          = toset(concat(local.user_principals, local.user_managed_identities))
+  user_principals    = [data.azurerm_client_config.current.object_id]
+  managed_identities = var.system_assigned_managed_id == "" ? [] : [var.system_assigned_managed_id]
+  any_principals = toset(concat(local.user_principals, local.managed_identities))
 }
+
 
 resource "azurerm_role_assignment" "storage_account_contributor" {
   for_each                         = local.any_principals
@@ -39,14 +31,13 @@ resource "azurerm_role_assignment" "storage_blob_data_contributor" {
 }
 
 module "storage" {
-  source  = "Azure/avm-res-storage-storageaccount/azurerm"
-  version = "~> 0.4.0"
+  source = "Azure/avm-res-storage-storageaccount/azurerm"
 
-  name                = module.naming.storage_account.name_unique
-  location            = azurerm_resource_group.bootstrap.location
-  resource_group_name = azurerm_resource_group.bootstrap.name
+  name                = local.resource_names["storage_account_name"]
+  location            = azurerm_resource_group.tfstate.location
+  resource_group_name = azurerm_resource_group.tfstate.name
 
-  account_replication_type          = "GRS"
+  account_replication_type          = "LRS"
   default_to_oauth_authentication   = true
   infrastructure_encryption_enabled = true
   shared_access_key_enabled         = true
