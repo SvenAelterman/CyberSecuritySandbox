@@ -3,3 +3,17 @@ locals {
   location        = lower(var.location)
 
 }
+
+# Calculate resource names
+locals {
+  name_replacements = {
+    workload       = var.resource_name_workload
+    environment    = var.resource_name_environment
+    location       = var.location
+    location_short = var.resource_name_location_short == "" ? local.geo_codes_by_location[var.location] : var.resource_name_location_short
+    uniqueness     = random_string.unique_name.id
+    sequence       = format("%03d", var.resource_name_sequence_start)
+  }
+
+  resource_names = { for key, value in var.resource_name_templates : key => templatestring(value, local.name_replacements) }
+}
