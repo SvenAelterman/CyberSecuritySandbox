@@ -31,7 +31,6 @@ module "subnet_addrs" {
   ]
 }
 
-
 module "virtualnetwork" {
   source  = "Azure/avm-res-network-virtualnetwork/azurerm"
   version = "~> 0.8.1"
