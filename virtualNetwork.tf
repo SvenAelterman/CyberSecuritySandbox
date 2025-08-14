@@ -9,7 +9,10 @@ module "subnet_addrs" {
   base_cidr_block = var.vnet_address_space
   networks = [
     {
-      name     = local.subnet_names.AzureFirewallSubnet
+      name = local.subnet_names.AzureFirewallSubnet
+      // The number of additional bits needed for the subnet CIDR
+      // is the desired size of the subnet (e.g., 26) subtracted from the current VNet CIDR
+      // Example: if the VNet CIDR is /24 and the subnet CIDR should be /26, then 2 additional bits are needed
       new_bits = 26 - local.vnet_address_cidr
     },
     {
