@@ -15,7 +15,9 @@
     "resourcegroup",
     "routetable",
     "srvadmin",
+    "storageaccount",
     "virtualmachine",
-    "virtualnetwork"
+    "virtualnetwork",
+    "westus"
   ]
 }
