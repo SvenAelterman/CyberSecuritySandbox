@@ -96,7 +96,8 @@ module "dc_vm" {
 
   enable_telemetry = var.telemetry_enabled
 
-  depends_on = [module.nat_gateway, module.fwpolicy_rulecollectiongroup]
+  // Explicit dependencies required to ensure that the VM can retrieve the DSC script for AD forest creation
+  depends_on = [module.nat_gateway, module.firewall, module.fwpolicy_rulecollectiongroup]
 }
 
 // Update VNet's DNS server IP to DC IP
