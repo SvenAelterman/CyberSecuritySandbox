@@ -30,7 +30,7 @@ module "key_vault" {
     bypass         = "AzureServices"
 
     # Must allow access from the local IP so that the passwords can be retrieved for use with Bastion
-    ip_rules = local.storage_account_firewall_allowed_ip
+    ip_rules = local.paas_firewall_allowed_ip
 
     virtual_network_subnet_ids = [
       module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource.output.id
