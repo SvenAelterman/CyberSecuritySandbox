@@ -15,19 +15,6 @@ module "rt" {
   resource_group_name = module.network_rg.name
   tags                = var.tags
 
-  # routes = {
-  #   kms01 = {
-  #     name           = "kms01"
-  #     address_prefix = "40.83.235.53/32"
-  #     next_hop_type  = "Internet"
-  #   },
-  #   kms02 = {
-  #     name           = "kms02"
-  #     address_prefix = "20.118.99.224/32"
-  #     next_hop_type  = "Internet"
-  #   }
-  # }
-
   enable_telemetry = var.telemetry_enabled
 }
 
