@@ -55,6 +55,9 @@ locals {
       route_table = var.deploy_firewall ? {
         id = module.rt[0].resource_id
       } : {}
+      # Added Microsoft.KeyVault to service_endpoints to allow resources in the ComputeSubnet to securely access Azure Key Vault over the Azure backbone network.
+      # This change is required for [insert business/technical reason, e.g., VM-managed identities accessing secrets/certificates].
+      # Note: Adding this endpoint affects network access patterns and should be reviewed for compliance and security.
       service_endpoints = ["Microsoft.Storage", "Microsoft.KeyVault"]
     }
   }
