@@ -1,5 +1,4 @@
 locals {
-  // TODO: Consider generating from a custom map with only the source, port, and protocol
   domainControllerSubnet_nsg_rules = {
     "Allow_Bastion_Inbound" = {
       name                       = "Allow_Bastion_Inbound"
@@ -176,7 +175,6 @@ locals {
       protocol                   = "Tcp"
       source_address_prefix      = module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource.output.properties.addressPrefixes[0]
       source_port_range          = "*"
-
     }
   }
 }

@@ -9,8 +9,7 @@ module "analysis_win_vm" {
   resource_group_name = module.analysis_rg.name
   tags                = var.tags
 
-  // TODO: Use Key Vault
-  admin_password = "Password1234!"
+  admin_password = random_password.analysis_vm_admin_password[0].result
   admin_username = "srvadmin"
 
   os_type                            = "Windows"
@@ -22,6 +21,10 @@ module "analysis_win_vm" {
   license_type = "Windows_Client"
 
   extensions = {
+    // LATER: Enhance parallelization of deployment by moving the domain join to a separate resource
+    // That way the VM deployment can start concurrently with the DC VM deployment and only the
+    // domain join has to be held up for the forest creation.
+    // TODO: Make conditional on DC deployment
     domain_join = {
       name                    = "domain_join"
       publisher               = "Microsoft.Compute"
@@ -37,7 +40,7 @@ module "analysis_win_vm" {
       })
 
       protected_settings = jsonencode({
-        Password = "Password1234!"
+        Password = random_password.dc_admin_password[0].result
       })
     }
   }
@@ -53,10 +56,11 @@ module "analysis_win_vm" {
     system_assigned = false
   }
 
-  // TODO: Check storage profile: use standard SSD LRS
+  // LATER: Check storage profile: use standard SSD LRS
 
   network_interfaces = {
     network_interface_1 = {
+      // TODO: Use naming module
       name = "soc-vm-nic-01"
       ip_configurations = {
         ip_configuration_1 = {
@@ -65,6 +69,8 @@ module "analysis_win_vm" {
           private_ip_address_allocation = "Dynamic"
         }
       }
+      // HACK: Explicitly setting the DNS server IP when domain-joining
+      dns_servers = var.deploy_dc ? [module.dc_vm[0].network_interfaces.network_interface_1.private_ip_address] : []
     }
   }
 
