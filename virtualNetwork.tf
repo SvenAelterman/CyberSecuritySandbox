@@ -47,7 +47,7 @@ locals {
       name             = local.subnet_names.ComputeSubnet
       address_prefixes = [module.subnet_addresses.network_cidr_blocks[local.subnet_names.ComputeSubnet]]
       network_security_group = {
-        id = module.computeSubnet_nsg.resource_id
+        id = module.computeSubnet_nsg.resource.id
       }
       nat_gateway = var.deploy_natgw ? {
         id = module.nat_gateway[0].resource_id
