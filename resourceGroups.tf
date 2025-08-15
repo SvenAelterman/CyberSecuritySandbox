@@ -41,3 +41,12 @@ module "analysis_rg" {
   location = var.location
   tags     = var.tags
 }
+
+module "support_rg" {
+  source  = "Azure/avm-res-resources-resourcegroup/azurerm"
+  version = "~> 0.2.1"
+
+  name     = replace(local.naming_structure, "{resourceType}", "rg-support")
+  location = var.location
+  tags     = var.tags
+}

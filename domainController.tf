@@ -12,19 +12,18 @@ module "dc_vm" {
   os_type                            = "Windows"
   generate_admin_password_or_ssh_key = false
   zone                               = null
-  // Must use a SKU with a local temp disk because the data disk is expected to be "Disk2" (// TODO: confirm)
+  // Must use a SKU with a local temp disk because the data disk is expected to be "Disk2"
   sku_size     = "Standard_D2ads_v5"
   license_type = "Windows_Server"
 
 
-  // TODO: Use Key Vault
-  admin_password = "Password1234!"
+  admin_password = random_password.dc_admin_password[0].result
   admin_username = "srvadmin"
 
   encryption_at_host_enabled = false
 
   extensions = {
-    create_ad_forest = { // TODO: Consider using Machine Configuration instead?
+    create_ad_forest = {
       name                       = "create_ad_forest"
       publisher                  = "Microsoft.PowerShell"
       type                       = "DSC"
@@ -35,7 +34,7 @@ module "dc_vm" {
         configurationArguments = {
           AdminCreds = {
             UserName = "srvadmin"
-            Password = "Password1234!"
+            Password = random_password.dc_admin_password[0].result
           }
         }
       })
@@ -58,7 +57,7 @@ module "dc_vm" {
   source_image_reference = {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
-    // TODO: Consider using smalldisk image
+    // LATER: Consider using smalldisk image
     sku     = "2022-datacenter-g2"
     version = "latest"
   }
@@ -78,7 +77,7 @@ module "dc_vm" {
     }
   }
 
-  // TODO: Check storage profile: use standard SSD LRS
+  // LATER: Check storage profile: use standard SSD LRS
 
   network_interfaces = {
     network_interface_1 = {

@@ -9,19 +9,6 @@ module "nat_gateway" {
   location            = module.network_rg.resource.location
   tags                = var.tags
 
-  // TODO: Only associate with ComputeSubnet and DomainControllerSubnet if no firewall deployed
-  subnet_associations = {
-    computeSubnet = {
-      resource_id = module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id
-    }
-    AzureFirewallSubnet = {
-      resource_id = module.virtualnetwork.subnets[local.subnet_names.AzureFirewallSubnet].resource_id
-    }
-    domainControllerSubnet = {
-      resource_id = module.virtualnetwork.subnets[local.subnet_names.DomainControllerSubnet].resource_id
-    }
-  }
-
   public_ip_configuration = {
     allocation_method = "Static"
     ip_version        = "IPv4"
@@ -31,6 +18,7 @@ module "nat_gateway" {
 
   public_ips = {
     ng_pip1 = {
+      // TODO: Use naming structure
       name = "soc-demo-ng-pip1-cnc-01"
     }
   }
