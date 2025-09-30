@@ -46,6 +46,6 @@ module "bastion" {
   enable_telemetry = var.telemetry_enabled
 
   // To enable Kerberos, deploy Bastion AFTER setting custom DNS
-  // https://learn.microsoft.com/en-us/azure/bastion/kerberos-authentication-portal
+  // https://learn.microsoft.com/azure/bastion/kerberos-authentication-portal
   depends_on = [azurerm_virtual_network_dns_servers.vnet_dns]
 }

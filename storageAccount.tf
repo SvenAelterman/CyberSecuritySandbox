@@ -42,7 +42,7 @@ module "storage" {
     bypass                     = ["AzureServices"]
     default_action             = "Deny"
     virtual_network_subnet_ids = [module.virtualnetwork.subnets[local.subnet_names.ComputeSubnet].resource_id]
-    ip_rules                   = local.storage_account_firewall_allowed_ip
+    ip_rules                   = local.paas_firewall_allowed_ip
   }
 
   enable_telemetry = var.telemetry_enabled
