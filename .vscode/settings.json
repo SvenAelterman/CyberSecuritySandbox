@@ -23,6 +23,7 @@
     "smalldisk",
     "srvadmin",
     "storageaccount",
+    "tfvars",
     "virtualmachine",
     "virtualnetwork",
     "westus"
